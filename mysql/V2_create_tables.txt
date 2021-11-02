@@ -1,0 +1,123 @@
+create table if not exists `person`(
+	`person_id`		INT(11)		NOT NULL AUTO_INCREMENT,
+	`name`			varchar(45)	not null,
+	`surname`		varchar(45)	not null,
+	`title`			varchar(20),
+	`photo`			varchar(255),
+	CONSTRAINT `person_pk` PRIMARY KEY (`person_id`)
+
+);
+
+create table if not exists `relationship`(
+	`relationship_id`		INT(11)		NOT NULL AUTO_INCREMENT,
+	`relationship_type`		varchar(45)	not null,
+	`note`				varchar(255),
+	`person_id1`			integer		not null,
+	`person_id2`			integer		not null,
+	CONSTRAINT `relationship_pk` PRIMARY KEY (`relationship_id`),
+	foreign key (`person_id1`) references `person`,
+	foreign key (`person_id2`) references `person`
+);
+
+create table if not exists `contact`(
+	`contact_id`			INT(11)		NOT NULL AUTO_INCREMENT,
+	`phone_num`				varchar(45),
+	`mail`					varchar(45),
+	`social_networks`		varchar(45),
+	`person_id`				integer		not null,
+	CONSTRAINT `contact_pk` PRIMARY KEY (`contact_id`),
+	foreign key (`person_id`) references `person`
+);
+
+create table if not exists `waiting_list`(
+	`waiting_list_id`		INT(11)		NOT NULL AUTO_INCREMENT,
+	`date`					date 		not null,
+	`order_num`				integer		not null,
+	`doctor_id`				integer		not null,
+	`patient_id`				integer		not null,
+	CONSTRAINT `waiting_list_pk` PRIMARY KEY (`waiting_list_id`),
+	foreign key (`doctor_id`) references `person`,
+	foreign key (`patient_id`) references `person`
+);
+
+create table if not exists `diagnosis_list`(
+	`diagnosis_id`		INT(11)		NOT NULL AUTO_INCREMENT,
+	`diagnose`			varchar(45)	not null
+);
+
+create table if not exists `medical_record`(
+	`record_id`				INT(11)		NOT NULL AUTO_INCREMENT,
+	`birth_id_number`		varchar(45)	not null,
+	`birth_date`			date		not null,
+	`insurance`				varchar(45)	not null,
+	`person_id`				integer		not null,
+	CONSTRAINT `record_pk` PRIMARY KEY (`record_id`),
+	foreign key (`person_id`) references `person`
+);
+
+create table if not exists `persons_diagnoses`(
+	`record_id`				integer		not null,
+	`diagnosis_id`			integer		not null,
+	foreign key (`record_id`) references `medical_record`,
+	foreign key (`diagnosis_id`) references `diagnosis_list`
+);
+
+create table if not exists `address`(
+	`address_id`			INT(11)		NOT NULL AUTO_INCREMENT,
+	`city`					varchar(45)		not null,
+	`street`				varchar(45)		not null,
+	`state`					varchar(45)		not null,
+	`house_number`				varchar(45)		not null,
+	`zip_code`				varchar(45)		not null,
+	CONSTRAINT `address_pk` PRIMARY KEY (`address_id`)
+);
+
+create table if not exists `persons_address`(
+	`person_id"`			integer		not null,
+	`address_id`			integer		not null,
+	foreign key (`person_id`) references `person`,
+	foreign key (`address_id`) references `address`
+);
+
+create table if not exists `location`(
+	`location_id`			INT(11)		NOT NULL AUTO_INCREMENT,
+	`location`				varchar(45)		not null,
+	`address_id`				integer			not null,
+	CONSTRAINT `location_pk` PRIMARY KEY (`location_id`),
+	foreign key	(`address_id`) references `address`
+);
+
+create table if not exists `medical_examination`(
+	`examination_id`		INT(11)		NOT NULL AUTO_INCREMENT,
+	`title`					varchar(45)		not null,
+	`note`					varchar(255),
+	`location_id`				integer			not null,
+	CONSTRAINT `examination_pk` PRIMARY KEY (`examination_id`),
+	foreign key (`location_id`) references `location`
+);
+
+create table if not exists `person_has_examination`(
+	`booked`				boolean			not null,
+	`date`					date,
+	`time`					time,
+	`examination_id`		integer			not null,
+	`person_id`				integer			not null,
+	foreign key (`examination_id`) references `medical_examination`,
+	foreign key (`person_id`) references person
+);
+
+create table if not exists `role`(
+	`role_id`			INT(11)		NOT NULL AUTO_INCREMENT,
+	`role`				varchar(45)		not null,
+	CONSTRAINT `role_pk` PRIMARY KEY (`role_id`)
+);
+
+create table if not exists `persons_role`(
+	`person_id`			integer			not null,
+	`role_id`			integer			not null,
+	foreign key (`person_id`) references `person`,
+	foreign key (`role_id`) references `role` 
+)
+
+
+
